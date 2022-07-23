@@ -1,4 +1,3 @@
-const APIKey = "23d272a09ce577ff8776ec8c3049893b";
 let city;
 let queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
 
