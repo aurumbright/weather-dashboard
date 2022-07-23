@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant&family=Cormorant+SC&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/style.css" />
+    <title></title>
+</head>
+
+
+<body class="flex-column min-100-vh">
+    <header class="hero">
+        <h1 class="app-title">Weather Dashboard</h1>
+    </header>
+
+
+    <main class="flex-row justify-space-between">
+        <div class="col-12 col-md-4">
+
+            <div class="card">
+                <h3 class="card-header text-uppercase">Search for a City:</h3>
+                <form id="user-form" class="card-body">
+                    <input name="city" id="city" type="text" placeholder="San Diego" autofocus="true"
+                        class="form-input" />
+                    <button type="submit" class="btn">Search</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <ul class="list-group">
+                    <li class="list-group-item"></li>
+                    <li class="list-group-item"></li>
+                    <li class="list-group-item"></li>
+                    <li class="list-group-item"></li>
+                    <li class="list-group-item"></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-8">
+            <div>
+                <h2 class="subtitle">Today's Forecast</h2>
+                <div id="today-weather" class="card">
+                    <span id="current-day"></span>
+                </div>
+            </div>
+            <div>
+                <h2 class="subtitle">5-Day Forecast</h2>
+                <div id="weather-container" class="list-group"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="./assets/script.js"></script>
+</body>
+
+</html>
