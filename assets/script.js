@@ -6,44 +6,26 @@ let cityInput = document.getElementById("city");
 let todayWeatherContainerEl = document.getElementById("today-weather");
 let forecastContainerEl = document.getElementById("weather-container");
 
-let dateDisplayEl = $('#current-day');
 
-// finding today's date
-let currentDay = moment().format("DD/MM/YYYY");
-dateDisplayEl.text(currentDay);
 
 // inside search function: let city = document.getElementById("city").value;
 // want to make sure that city can be both the id from the search and also later, the value from a new id
 
-/* 
-Step one: Collect search query from user and request data from API: 
-- Weather icon (cloudy etc)
-- temperature
-- Wind
-- Humidity
-- UV Index
-
-Other important data: Today's date, city name in H2
-Currently holding today's date in a <span> but that might need to be done in js
-
-All of these things in a card/hero in the top row of the right side column
-*/
-
 let formSubmitHandler = function (event) {
     event.preventDefault();
-    let cityName = cityInput.value.trim()
+
+    let cityName = cityInput.value.trim();
+
     if (cityName) {
         getCurrentWeather(cityName);
-        // todayWeatherContainerEl.textContent = '';
         getForecast(cityName);
-        // forecastContainerEl.textContent = '';
     } else {
         alert('Please enter a city name');
     }
 }
 
 let getCurrentWeather = function (city) {
-    let queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
+    let queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey + "&units=imperial";
 
     fetch(queryURL)
         .then(function (response) {
@@ -64,7 +46,7 @@ let getCurrentWeather = function (city) {
 }
 
 let getForecast = function (city) {
-    let queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&cnt=5" + "&appid=" + APIKey;
+    let queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&cnt=5" + "&appid=" + APIKey + "&units=imperial";
 
     fetch(queryURL)
         .then(function (response) {
@@ -72,7 +54,7 @@ let getForecast = function (city) {
                 console.log(response);
                 response.json().then(function (data) {
                     console.log(data);
-                    displayWeather(data, city);
+                    displayForecast(data, city);
                 })
             } else {
                 alert('Error: ' + response.statusText);
@@ -83,10 +65,40 @@ let getForecast = function (city) {
         });
 }
 
-let displayWeather = function () {
+let displayWeather = function (data, cityName) {
+    if (data.length === 0) {
+        alert('No weather data found');
+        return;
+    }
+
+    let currentCity = document.getElementById("current-city");
+    let cityHeading = document.createElement('h2');
+    let currentDay = moment().format("DD/MM/YYYY");
+
+    let iconCode = data.weather[0].icon;
+    let iconURL = "http://openweathermap.org/img/w/" + iconCode + ".png";
+
+
+    let iconEl = document.createElement('img');
+    iconEl.setAttribute('src', iconURL);
+
+    let weatherIcon = iconEl;
+    
+    cityHeading.innerHTML = cityName + ", " + currentDay;
+    cityHeading.appendChild(weatherIcon);
+    currentCity.appendChild(cityHeading);
+
+    let currentTemp = $("#current-temp");
+    let currentHumidity = $("#current-humidity");
+    let currentWind = $("#current-wind");
+    let currentFeels = $("#current-feels");
+
+    currentTemp.replaceWith(data.main.temp);
+    currentFeels.replaceWith(data.main.feels_like);
+    currentHumidity.replaceWith(data.main.humidity);
+    currentWind.replaceWith(data.wind.speed);
 
 }
-
 
 searchFormEl.addEventListener('submit', formSubmitHandler);
 
