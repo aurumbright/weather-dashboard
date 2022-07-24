@@ -50,6 +50,10 @@ a {
     font-weight: bolder;
 }
 
+.hidden {
+    display: none;
+}
+
 .btn {
     font-size: 1.3rem;
     text-decoration: none;

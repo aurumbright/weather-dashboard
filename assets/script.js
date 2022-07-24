@@ -11,6 +11,21 @@ let forecastContainerEl = document.getElementById("weather-container");
 // inside search function: let city = document.getElementById("city").value;
 // want to make sure that city can be both the id from the search and also later, the value from a new id
 
+/* 
+Step one: Collect search query from user and request data from API: 
+- Weather icon (cloudy etc)
+- temperature
+- Wind
+- Humidity
+- UV Index
+
+Other important data: Today's date, city name in H2
+Currently holding today's date in a <span> but that might need to be done in js
+
+All of these things in a card/hero in the top row of the right side column
+*/
+
+
 let formSubmitHandler = function (event) {
     event.preventDefault();
 
@@ -18,21 +33,64 @@ let formSubmitHandler = function (event) {
 
     if (cityName) {
         getCurrentWeather(cityName);
-        getForecast(cityName);
+
     } else {
         alert('Please enter a city name');
     }
 }
 
 let getCurrentWeather = function (city) {
-    let queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey + "&units=imperial";
+    let cityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&appid=" + APIKey;
+    let coordinates;
+    let latLonData;
 
-    fetch(queryURL)
+    fetch(cityURL)
         .then(function (response) {
             if (response.ok) {
                 console.log(response);
                 response.json().then(function (data) {
                     console.log(data);
+                    latLonData = data;
+                    console.log(latLonData);
+
+                    let latitude = data[0].lat;
+                    let longitude = data[0].lon;
+                    coordinates = "lat=" + latitude + "&lon=" + longitude;
+
+                    return fetch("https://api.openweathermap.org/data/2.5/onecall?" + coordinates + "&exclude=minutely,hourly,daily,alerts" + "&appid=" + APIKey + "&units=imperial")
+                        .then(function (response) {
+                            if (response.ok) {
+                                // console.log(response);
+                                response.json().then(function (data) {
+                                    // console.log(data);
+                                    displayWeather(data, city);
+                                })
+                            } else {
+                                alert('Error: ' + response.statusText);
+                            }
+                        })
+                        .catch(function (error) {
+                            alert('Unable to connect to OpenWeather');
+                        });
+
+                })
+            }
+        })
+}
+
+/*
+let getCurrentWeather = function (city) {
+ 
+    // let queryURL = "https://api.openweathermap.org/data/2.5/onecall?q=" + coordinates + "&cnt=5" + "&appid=" + APIKey + "&units=imperial";
+ 
+    let queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey + "&units=imperial";
+ 
+    fetch("https://api.openweathermap.org/data/2.5/onecall?q=" + coordinates + "&cnt=5" + "&appid=" + APIKey + "&units=imperial")
+        .then(function (response) {
+            if (response.ok) {
+                // console.log(response);
+                response.json().then(function (data) {
+                    // console.log(data);
                     displayWeather(data, city);
                 })
             } else {
@@ -42,18 +100,18 @@ let getCurrentWeather = function (city) {
         .catch(function (error) {
             alert('Unable to connect to OpenWeather');
         });
-
+ 
 }
-
+*/
 let getForecast = function (city) {
     let queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&cnt=5" + "&appid=" + APIKey + "&units=imperial";
 
     fetch(queryURL)
         .then(function (response) {
             if (response.ok) {
-                console.log(response);
+                // console.log(response);
                 response.json().then(function (data) {
-                    console.log(data);
+                    // console.log(data);
                     displayForecast(data, city);
                 })
             } else {
@@ -75,7 +133,7 @@ let displayWeather = function (data, cityName) {
     let cityHeading = document.createElement('h2');
     let currentDay = moment().format("DD/MM/YYYY");
 
-    let iconCode = data.weather[0].icon;
+    let iconCode = data.current.weather.icon;
     let iconURL = "http://openweathermap.org/img/w/" + iconCode + ".png";
 
 
@@ -83,7 +141,7 @@ let displayWeather = function (data, cityName) {
     iconEl.setAttribute('src', iconURL);
 
     let weatherIcon = iconEl;
-    
+
     cityHeading.innerHTML = cityName + ", " + currentDay;
     cityHeading.appendChild(weatherIcon);
     currentCity.appendChild(cityHeading);
@@ -91,12 +149,12 @@ let displayWeather = function (data, cityName) {
     let currentTemp = $("#current-temp");
     let currentHumidity = $("#current-humidity");
     let currentWind = $("#current-wind");
-    let currentFeels = $("#current-feels");
+    let currentUv = $("#current-uv");
 
-    currentTemp.replaceWith(data.main.temp);
-    currentFeels.replaceWith(data.main.feels_like);
-    currentHumidity.replaceWith(data.main.humidity);
-    currentWind.replaceWith(data.wind.speed);
+    currentTemp.replaceWith(data.current.temp);
+    currentUv.replaceWith(data.current.uvi);
+    currentHumidity.replaceWith(data.current.humidity);
+    currentWind.replaceWith(data.current.wind_speed);
 
 }
 
