@@ -150,7 +150,7 @@ p {
     margin: 0 0 20px 0;
     border: 3px solid var(--buttons);
     border-radius: var(--border-radius);
-    background-color: var(--background);
+    background-color: var(--extracolor);
 }
 
 .card-header {
@@ -295,6 +295,10 @@ p {
 
 .col-12 {
     flex: 0 0 100%;
+}
+
+#today-weather {
+    padding: 10px 10px 0 10px;
 }
 
 /* col-sm */
