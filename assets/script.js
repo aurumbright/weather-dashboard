@@ -6,26 +6,6 @@ let cityInput = document.getElementById("city");
 let todayWeatherContainerEl = document.getElementById("today-weather");
 let forecastContainerEl = document.getElementById("weather-container");
 
-
-
-// inside search function: let city = document.getElementById("city").value;
-// want to make sure that city can be both the id from the search and also later, the value from a new id
-
-/* 
-Step one: Collect search query from user and request data from API: 
-- Weather icon (cloudy etc)
-- temperature
-- Wind
-- Humidity
-- UV Index
-
-Other important data: Today's date, city name in H2
-Currently holding today's date in a <span> but that might need to be done in js
-
-All of these things in a card/hero in the top row of the right side column
-*/
-
-
 let formSubmitHandler = function (event) {
     event.preventDefault();
 
@@ -57,12 +37,12 @@ let getCurrentWeather = function (city) {
                     let longitude = data[0].lon;
                     coordinates = "lat=" + latitude + "&lon=" + longitude;
 
-                    return fetch("https://api.openweathermap.org/data/2.5/onecall?" + coordinates + "&exclude=minutely,hourly,daily,alerts" + "&appid=" + APIKey + "&units=imperial")
+                    return fetch("https://api.openweathermap.org/data/2.5/onecall?" + coordinates + "&exclude=minutely,hourly,alerts" + "&appid=" + APIKey + "&units=imperial")
                         .then(function (response) {
                             if (response.ok) {
-                                // console.log(response);
+                                console.log(response);
                                 response.json().then(function (data) {
-                                    // console.log(data);
+                                    console.log(data);
                                     displayWeather(data, city);
                                 })
                             } else {
@@ -78,51 +58,6 @@ let getCurrentWeather = function (city) {
         })
 }
 
-/*
-let getCurrentWeather = function (city) {
- 
-    // let queryURL = "https://api.openweathermap.org/data/2.5/onecall?q=" + coordinates + "&cnt=5" + "&appid=" + APIKey + "&units=imperial";
- 
-    let queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey + "&units=imperial";
- 
-    fetch("https://api.openweathermap.org/data/2.5/onecall?q=" + coordinates + "&cnt=5" + "&appid=" + APIKey + "&units=imperial")
-        .then(function (response) {
-            if (response.ok) {
-                // console.log(response);
-                response.json().then(function (data) {
-                    // console.log(data);
-                    displayWeather(data, city);
-                })
-            } else {
-                alert('Error: ' + response.statusText);
-            }
-        })
-        .catch(function (error) {
-            alert('Unable to connect to OpenWeather');
-        });
- 
-}
-*/
-let getForecast = function (city) {
-    let queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&cnt=5" + "&appid=" + APIKey + "&units=imperial";
-
-    fetch(queryURL)
-        .then(function (response) {
-            if (response.ok) {
-                // console.log(response);
-                response.json().then(function (data) {
-                    // console.log(data);
-                    displayForecast(data, city);
-                })
-            } else {
-                alert('Error: ' + response.statusText);
-            }
-        })
-        .catch(function (error) {
-            alert('Unable to connect to OpenWeather');
-        });
-}
-
 let displayWeather = function (data, cityName) {
     if (data.length === 0) {
         alert('No weather data found');
@@ -133,7 +68,7 @@ let displayWeather = function (data, cityName) {
     let cityHeading = document.createElement('h2');
     let currentDay = moment().format("DD/MM/YYYY");
 
-    let iconCode = data.current.weather.icon;
+    let iconCode = data.current.weather[0].icon;
     let iconURL = "http://openweathermap.org/img/w/" + iconCode + ".png";
 
 
@@ -156,31 +91,54 @@ let displayWeather = function (data, cityName) {
     currentHumidity.replaceWith(data.current.humidity);
     currentWind.replaceWith(data.current.wind_speed);
 
+
+// 5-day forecast
+    for (let i = 1; i < 6; i++) {        
+        let weatherContainer = document.getElementById('weather-container');
+
+        let column = document.createElement('div');
+        column.setAttribute('class', 'col-sm-2');
+        let card = document.createElement('div');
+        card.setAttribute('class', 'card');
+        let cardBody = document.createElement('div');
+        cardBody.setAttribute('class', 'card-body');
+        let dayHeading = document.createElement('h5');
+        dayHeading.setAttribute('class', 'card-title');
+
+        let dayIconEl = document.createElement('img');
+        dayIconEl.setAttribute('class', 'card-text');
+        let dayTemp = document.createElement('p');
+        dayTemp.setAttribute('class', 'card-text');
+        let dayWind = document.createElement('p');
+        dayWind.setAttribute('class', 'card-text');
+        let dayHumidity = document.createElement('p');
+        dayHumidity.setAttribute('class', 'card-text');
+        
+        let dayIcon = data.daily[i].weather[0].icon;
+        let dayIconURL = "http://openweathermap.org/img/w/" + dayIcon + ".png";
+
+        dayHeading.innerText = (moment.unix(data.daily[i].dt).format("DD/MM/YYYY"));
+        dayIconEl.setAttribute('src', dayIconURL);
+        dayTemp.innerText = "Temperature: " + data.daily[i].temp.day;
+        dayWind.innerText = "Wind Speed: " + data.daily[i].wind_speed;
+        dayHumidity.innerText = "Humidity: " + data.daily[i].humidity;
+
+        cardBody.append(dayHeading, dayIconEl, dayTemp, dayWind, dayHumidity);
+        card.appendChild(cardBody);
+        column.appendChild(card);
+        weatherContainer.appendChild(column);
+
+    }
+
 }
 
 searchFormEl.addEventListener('submit', formSubmitHandler);
 
-
-/*
-Step two: Get next five days' forecast for bottom row of right side column
-- Date
-- Weather icon (cloudy etc)
-- temperature
-- Wind
-- Humidity
-- UV Index
-*/
-
-
-
-
-/*
-Step three: Store previous searches in list below search form in left-hand column
-*/
-
 /*
 Step four: Reconstitute previous searches in right-hand column 
     when previous search buttons/list items are clicked
+
+    This will just be setting them as buttons that call the getWeatheretc functions using the text of the button
   */
 
 // Adds previous searches to sidebar list
@@ -194,11 +152,8 @@ function listCities() {
     for (var i = 0; i < cities.length; i++) {
         let prevCity = cities[i];
 
-
-        // This will need to be fixed: I don't want to just make them links, I want them to run their searches
         let a = document.createElement('a');
         a.href = "";
-
 
         let list = document.createElement("li");
         list.textContent = prevCity;
@@ -232,6 +187,13 @@ searchFormEl.addEventListener("submit", function (event) {
     cityInput.value = '';
     storeCities();
     listCities();
+});
+
+let btnClear = document.getElementById('clear');
+
+btnClear.addEventListener("click", function () {
+    localStorage.clear();
+    location.reload();
 });
 
 searchList.addEventListener("click", function (event) {
