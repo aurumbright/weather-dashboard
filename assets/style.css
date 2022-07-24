@@ -45,6 +45,11 @@ p {
     font-size: 1.2rem;
 }
 
+a {
+    color: var(--headingfont);
+    font-weight: bolder;
+}
+
 .btn {
     font-size: 1.3rem;
     text-decoration: none;
@@ -113,7 +118,7 @@ p {
 }
 
 .list-group {
-    padding: 0;
+    padding: 10px;
     list-style: none;
 }
 
