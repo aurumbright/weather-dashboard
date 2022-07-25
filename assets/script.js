@@ -38,7 +38,7 @@ let getCurrentWeather = function(city) {
                     let longitude = data[0].lon;
                     coordinates = "lat=" + latitude + "&lon=" + longitude;
 
-                    return fetch("https://api.openweathermap.org/data/2.5/onecall?" + coordinates + "&exclude=minutely,hourly,alerts" + "&appid=" + APIKey + "&units=imperial")
+                    return fetch("https://api.openweathermap.org/data/2.5/onecall?" + coordinates + "&exclude=minutely,hourly" + "&appid=" + APIKey + "&units=imperial")
                         .then(function (response) {
                             if (response.ok) {
                                 console.log(response);
@@ -84,50 +84,53 @@ let displayWeather = function (data, city) {
     $("#current-wind").text(data.current.wind_speed);
     $("#current-uv").text(data.current.uvi);
 
-    // 5-day forecast
-    // instead of createElement maybe try setting Attributes for hidden - but hidden wasn't working
-    for (let i = 1; i < 6; i++) {
 
+    if (parseInt(data.current.uvi) < 3) {
+        $(".alert").attr("class", "alert-success");
+    } else if (parseInt(data.current.uvi) < 7) {
+        $(".alert").attr("class", "alert-warning")
+    } else if (parseInt(data.current.uvi) > 7) {
+        $(".alert").attr("class", "alert-danger")
+    };
+
+    // 5-day forecast
+    forecastContainerEl.textContent = "";
+
+    for (let i = 1; i < 6; i++) {
 
         let dayIcon = data.daily[i].weather[0].icon;
         let dayIconURL = "http://openweathermap.org/img/w/" + dayIcon + ".png";
 
-        $('[data-head]').text(moment.unix(data.daily[i].dt).format("DD/MM/YYYY"));
-        $('[data-temp]').text("Temperature: " + data.daily[i].temp.day);
-        $('[data-humidity]').text("Humidity: " + data.daily[i].humidity);
-        $("[data-wind]").text("Wind Speed: " + data.daily[i].wind_speed);
-        $("[data-img]").attr('src', dayIconURL);
+        let weatherContainer = document.getElementById('weather-container');
 
-        // let weatherContainer = document.getElementById('weather-container');
+        let column = document.createElement('div');
+        column.setAttribute('class', 'col-sm-2');
+        let card = document.createElement('div');
+        card.setAttribute('class', 'card');
+        let cardBody = document.createElement('div');
+        cardBody.setAttribute('class', 'card-body');
+        let dayHeading = document.createElement('h5');
+        dayHeading.setAttribute('class', 'card-title');
 
-        // let column = document.createElement('div');
-        // column.setAttribute('class', 'col-sm-2');
-        // let card = document.createElement('div');
-        // card.setAttribute('class', 'card');
-        // let cardBody = document.createElement('div');
-        // cardBody.setAttribute('class', 'card-body');
-        // let dayHeading = document.createElement('h5');
-        // dayHeading.setAttribute('class', 'card-title');
+        let dayIconEl = document.createElement('img');
+        dayIconEl.setAttribute('class', 'card-text');
+        let dayTemp = document.createElement('p');
+        dayTemp.setAttribute('class', 'card-text');
+        let dayWind = document.createElement('p');
+        dayWind.setAttribute('class', 'card-text');
+        let dayHumidity = document.createElement('p');
+        dayHumidity.setAttribute('class', 'card-text');
 
-        // let dayIconEl = document.createElement('img');
-        // dayIconEl.setAttribute('class', 'card-text');
-        // let dayTemp = document.createElement('p');
-        // dayTemp.setAttribute('class', 'card-text');
-        // let dayWind = document.createElement('p');
-        // dayWind.setAttribute('class', 'card-text');
-        // let dayHumidity = document.createElement('p');
-        // dayHumidity.setAttribute('class', 'card-text');
+        dayHeading.innerText = (moment.unix(data.daily[i].dt).format("DD/MM/YYYY"));
+        dayIconEl.setAttribute('src', dayIconURL);
+        dayTemp.innerText = "Temperature: " + data.daily[i].temp.day;
+        dayWind.innerText = "Wind Speed: " + data.daily[i].wind_speed;
+        dayHumidity.innerText = "Humidity: " + data.daily[i].humidity;
 
-        // dayHeading.innerText = (moment.unix(data.daily[i].dt).format("DD/MM/YYYY"));
-        // dayIconEl.setAttribute('src', dayIconURL);
-        // dayTemp.innerText = "Temperature: " + data.daily[i].temp.day;
-        // dayWind.innerText = "Wind Speed: " + data.daily[i].wind_speed;
-        // dayHumidity.innerText = "Humidity: " + data.daily[i].humidity;
-
-        // cardBody.append(dayHeading, dayIconEl, dayTemp, dayWind, dayHumidity);
-        // card.appendChild(cardBody);
-        // column.appendChild(card);
-        // weatherContainer.appendChild(column);
+        cardBody.append(dayHeading, dayIconEl, dayTemp, dayWind, dayHumidity);
+        card.appendChild(cardBody);
+        column.appendChild(card);
+        weatherContainer.appendChild(column);
 
     }
 
