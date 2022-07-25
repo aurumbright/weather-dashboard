@@ -98,8 +98,6 @@ let displayWeather = function (data, city) {
         $("[data-wind]").text("Wind Speed: " + data.daily[i].wind_speed);
         $("[data-img]").attr('src', dayIconURL);
 
-        // $(".popupDiv[data-layer|='layer"+i+"']").each(function(){
-
         // let weatherContainer = document.getElementById('weather-container');
 
         // let column = document.createElement('div');
