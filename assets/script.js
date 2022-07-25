@@ -79,9 +79,9 @@ let displayWeather = function (data, city) {
     currentCity.innerHTML = city + ", " + currentDay;
     currentCity.appendChild(weatherIcon);
 
-    $("#current-temp").text(data.current.temp);
-    $("#current-humidity").text(data.current.humidity);
-    $("#current-wind").text(data.current.wind_speed);
+    $("#current-temp").text(data.current.temp + '\u00B0' + "F");
+    $("#current-humidity").text(data.current.humidity + "%");
+    $("#current-wind").text(data.current.wind_speed + "mph");
     $("#current-uv").text(data.current.uvi);
 
 
@@ -123,9 +123,9 @@ let displayWeather = function (data, city) {
 
         dayHeading.innerText = (moment.unix(data.daily[i].dt).format("DD/MM/YYYY"));
         dayIconEl.setAttribute('src', dayIconURL);
-        dayTemp.innerText = "Temperature: " + data.daily[i].temp.day;
-        dayWind.innerText = "Wind Speed: " + data.daily[i].wind_speed;
-        dayHumidity.innerText = "Humidity: " + data.daily[i].humidity;
+        dayTemp.innerText = "Temperature: " + data.daily[i].temp.day + '\u00B0' + "F";
+        dayWind.innerText = "Wind Speed: " + data.daily[i].wind_speed + "mph";
+        dayHumidity.innerText = "Humidity: " + data.daily[i].humidity + "%";
 
         cardBody.append(dayHeading, dayIconEl, dayTemp, dayWind, dayHumidity);
         card.appendChild(cardBody);
