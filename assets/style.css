@@ -50,6 +50,10 @@ a {
     font-weight: bolder;
 }
 
+.subtitle {
+    padding: 10px 0;
+}
+
 .hidden {
     display: none;
 }
@@ -71,6 +75,27 @@ a {
 
 .btn:hover {
     background-color: var(--highlight);
+    transform: translate(0, 0);
+    box-shadow: 2px 2px var(--buttons);
+}
+
+.btn-2 {
+    font-size: 1.3rem;
+    text-decoration: none;
+    padding: 6px 5px;
+    width: 100%;
+    display: block;
+    margin: 5px 0;
+    border-radius: var(--border-radius);
+    color: var(--paragraphfont);
+    border: none;
+    outline: none;
+    background-color: var(--highlight);
+    transform: translate(-1px, -1px);
+}
+
+.btn-2:hover {
+    background-color: var(--button);
     transform: translate(0, 0);
     box-shadow: 2px 2px var(--buttons);
 }
@@ -171,7 +196,11 @@ a {
 
 .card-body {
     padding: 2.5%;
-    background-color: var(--background);
+    background-color: var(--extra-color);
+}
+
+.card-text, .card-title {
+    margin-left: 10px;
 }
 
 /* FORM */

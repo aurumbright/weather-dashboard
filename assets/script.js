@@ -58,7 +58,7 @@ let getCurrentWeather = function (city) {
         })
 }
 
-let displayWeather = function (data, cityName) {
+let displayWeather = function (data, city) {
     if (data.length === 0) {
         alert('No weather data found');
         return;
@@ -71,13 +71,12 @@ let displayWeather = function (data, cityName) {
     let iconCode = data.current.weather[0].icon;
     let iconURL = "http://openweathermap.org/img/w/" + iconCode + ".png";
 
-
     let iconEl = document.createElement('img');
     iconEl.setAttribute('src', iconURL);
 
     let weatherIcon = iconEl;
 
-    cityHeading.innerHTML = cityName + ", " + currentDay;
+    cityHeading.innerHTML = city + ", " + currentDay;
     cityHeading.appendChild(weatherIcon);
     currentCity.appendChild(cityHeading);
 
@@ -92,8 +91,8 @@ let displayWeather = function (data, cityName) {
     currentWind.replaceWith(data.current.wind_speed);
 
 
-// 5-day forecast
-    for (let i = 1; i < 6; i++) {        
+    // 5-day forecast
+    for (let i = 1; i < 6; i++) {
         let weatherContainer = document.getElementById('weather-container');
 
         let column = document.createElement('div');
@@ -113,7 +112,7 @@ let displayWeather = function (data, cityName) {
         dayWind.setAttribute('class', 'card-text');
         let dayHumidity = document.createElement('p');
         dayHumidity.setAttribute('class', 'card-text');
-        
+
         let dayIcon = data.daily[i].weather[0].icon;
         let dayIconURL = "http://openweathermap.org/img/w/" + dayIcon + ".png";
 
@@ -134,13 +133,6 @@ let displayWeather = function (data, cityName) {
 
 searchFormEl.addEventListener('submit', formSubmitHandler);
 
-/*
-Step four: Reconstitute previous searches in right-hand column 
-    when previous search buttons/list items are clicked
-
-    This will just be setting them as buttons that call the getWeatheretc functions using the text of the button
-  */
-
 // Adds previous searches to sidebar list
 let searchList = document.querySelector("#searches");
 let cities = [];
@@ -152,15 +144,15 @@ function listCities() {
     for (var i = 0; i < cities.length; i++) {
         let prevCity = cities[i];
 
-        let a = document.createElement('a');
-        a.href = "";
+        let button = document.createElement('button');
+        button.setAttribute('class', 'btn-2');
 
         let list = document.createElement("li");
         list.textContent = prevCity;
         list.setAttribute("data-index", i);
 
-        a.appendChild(list)
-        searchList.appendChild(a);
+        button.appendChild(list)
+        searchList.appendChild(button);
     }
 }
 
@@ -204,6 +196,14 @@ searchList.addEventListener("click", function (event) {
         storeCities();
         listCities();
     }
-})
+});
+
+$('#searches').on("click", (event) => {
+    event.preventDefault();
+
+    $('.btn-2').val(event.target.textContent);
+    prevSearchCity=$('.btn-2').val();
+    getCurrentWeather(prevSearchCity);
+});
 
 init();
