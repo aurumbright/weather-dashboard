@@ -21,7 +21,7 @@ let formSubmitHandler = function (event) {
 
 let getCurrentWeather = function(city) {
 
-    let cityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&appid=" + APIKey;
+    let cityURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&appid=" + APIKey;
     let coordinates;
     let latLonData;
 
