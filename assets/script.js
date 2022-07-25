@@ -19,7 +19,8 @@ let formSubmitHandler = function (event) {
     }
 }
 
-let getCurrentWeather = function (city) {
+let getCurrentWeather = function(city) {
+
     let cityURL = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&appid=" + APIKey;
     let coordinates;
     let latLonData;
@@ -65,7 +66,6 @@ let displayWeather = function (data, city) {
     }
 
     let currentCity = document.getElementById("current-city");
-    let cityHeading = document.createElement('h2');
     let currentDay = moment().format("DD/MM/YYYY");
 
     let iconCode = data.current.weather[0].icon;
@@ -76,9 +76,8 @@ let displayWeather = function (data, city) {
 
     let weatherIcon = iconEl;
 
-    cityHeading.innerHTML = city + ", " + currentDay;
-    cityHeading.appendChild(weatherIcon);
-    currentCity.appendChild(cityHeading);
+    currentCity.innerHTML = city + ", " + currentDay;
+    currentCity.appendChild(weatherIcon);
 
     let currentTemp = $("#current-temp");
     let currentHumidity = $("#current-humidity");
