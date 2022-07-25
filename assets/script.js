@@ -69,7 +69,7 @@ let displayWeather = function (data, city) {
     let currentDay = moment().format("DD/MM/YYYY");
 
     let iconCode = data.current.weather[0].icon;
-    let iconURL = "http://openweathermap.org/img/w/" + iconCode + ".png";
+    let iconURL = "https://openweathermap.org/img/w/" + iconCode + ".png";
 
     let iconEl = document.createElement('img');
     iconEl.setAttribute('src', iconURL);
@@ -86,11 +86,11 @@ let displayWeather = function (data, city) {
 
 
     if (parseInt(data.current.uvi) < 3) {
-        $(".alert").attr("class", "alert-success");
+        $("#uv-alert").attr("class", "alert-success").removeAttr("alert-danger", "alert-warning");
     } else if (parseInt(data.current.uvi) < 7) {
-        $(".alert").attr("class", "alert-warning")
+        $("#uv-alert").attr("class", "alert-warning").removeAttr("alert-danger", "alert-success");
     } else if (parseInt(data.current.uvi) > 7) {
-        $(".alert").attr("class", "alert-danger")
+        $("#uv-alert").attr("class", "alert-danger").removeAttr("alert-success", "alert-warning");
     };
 
     // 5-day forecast
@@ -99,7 +99,7 @@ let displayWeather = function (data, city) {
     for (let i = 1; i < 6; i++) {
 
         let dayIcon = data.daily[i].weather[0].icon;
-        let dayIconURL = "http://openweathermap.org/img/w/" + dayIcon + ".png";
+        let dayIconURL = "https://openweathermap.org/img/w/" + dayIcon + ".png";
 
         let weatherContainer = document.getElementById('weather-container');
 
